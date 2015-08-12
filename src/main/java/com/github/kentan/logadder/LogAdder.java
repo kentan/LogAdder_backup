@@ -15,11 +15,14 @@ import com.github.javaparser.ast.stmt.Statement;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class LogAdder {
 	private String importingClassName;
 	private Statement logStatement;
+	private List<String> ignoringFiles = new ArrayList<String>();
 	public void setImportingClassName(String importingClassName){
 		this.importingClassName = importingClassName;
 	}
@@ -30,6 +33,10 @@ public class LogAdder {
 
 		findJavaAndAddLog(rootDirectory);
 
+	}
+
+	public void addFileToIgnore(String path){
+		ignoringFiles.add(path);
 	}
 
 	private void addImportStatement(CompilationUnit cu){
@@ -44,14 +51,21 @@ public class LogAdder {
 	}
 
 	private void addLogStatement(CompilationUnit cu){
+		if(cu == null) return ;
 		for(TypeDeclaration typeDecl : cu.getTypes()){
-
+			if(typeDecl == null) continue;
 			for(BodyDeclaration bodyDecl: typeDecl.getMembers()){
+				if (bodyDecl == null) continue;
 				if(bodyDecl instanceof MethodDeclaration) {
 					MethodDeclaration methodDecl = (MethodDeclaration)bodyDecl;
+					if(methodDecl == null) continue;
 					BlockStmt blockStmt = methodDecl.getBody();
+
+					if(blockStmt == null)  continue;
+
 					ExpressionStmt expressionStmt = new ExpressionStmt();
-					blockStmt.getStmts().add(0,logStatement);
+					blockStmt.getStmts().add(0, logStatement);
+
 
 				}
 			}
@@ -90,10 +104,13 @@ public class LogAdder {
 		findJavaAndAddLogRec(file);
 	}
 	private void findJavaAndAddLogRec(File file){
-		if(file.isDirectory()){
-			for(File f : file.listFiles()) {
+		if(file.isDirectory()) {
+			for (File f : file.listFiles()) {
 				findJavaAndAddLogRec(f);
 			}
+		}else if(ignoringFiles.contains(file.getAbsolutePath())){
+			// do nothing
+			return ;
 		}else if(file.getAbsolutePath().endsWith(".java")){
 
 			addStatements(file.getAbsolutePath());
