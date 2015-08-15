@@ -8,8 +8,8 @@ public class StdOutAdder {
 
     public static void main(String args[]) {
         LogAdder logAdder = new  LogAdder();
-        //		String filePath = "C:\\develop\\LogAdder\\src\\main\\java\\com\\github\\kentan\\logadder\\sample\\StdOutAdder.java";
-        String filePath = "C:\\develop\\LogAdder\\src\\main\\java\\com\\github\\kentan\\logadder\\sample\\data";
+
+        String filePath = "<File or Directory path>";
         String message = "\"I\'m at \"+";
         String addingStatement = "System.out.println(" + message + "new Exception().getStackTrace()[0].toString());";
         try {
