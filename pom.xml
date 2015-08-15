@@ -3,6 +3,7 @@
     <groupId>com.github.kentan.logadder</groupId>
     <artifactId>logadder</artifactId>
     <version>1</version>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
